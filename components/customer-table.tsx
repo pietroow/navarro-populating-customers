@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import type { Customer } from "@/lib/types"
-import { Trash2 } from "lucide-react"
+import { Trash2, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
 import { CustomerDialog } from "./customer-dialog"
 import { deleteCustomer } from "@/app/actions"
 import { useTransition } from "react"
@@ -27,6 +27,25 @@ export function CustomerTable({ customers, totalCount }: CustomerTableProps) {
   const currentPage = Number(searchParams.get("page")) || 1
   const pageSize = Number(searchParams.get("pageSize")) || 10
   const totalPages = Math.ceil(totalCount / pageSize)
+  const currentSort = searchParams.get("sort") || "created_at"
+  const currentOrder = searchParams.get("order") || "desc"
+
+  const handleSort = (field: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (currentSort === field) {
+      params.set("order", currentOrder === "asc" ? "desc" : "asc")
+    } else {
+      params.set("sort", field)
+      params.set("order", "asc")
+    }
+    params.set("page", "1")
+    router.push(`?${params.toString()}`)
+  }
+
+  const SortIcon = ({ field }: { field: string }) => {
+    if (currentSort !== field) return <ArrowUpDown className="ml-1 h-4 w-4" />
+    return currentOrder === "asc" ? <ArrowUp className="ml-1 h-4 w-4" /> : <ArrowDown className="ml-1 h-4 w-4" />
+  }
 
   const handleDelete = async (id: string) => {
     if (!confirm("Tem certeza que deseja excluir este cliente?")) return
@@ -68,10 +87,26 @@ export function CustomerTable({ customers, totalCount }: CustomerTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Nome</TableHead>
+              <TableHead>
+                <button
+                  onClick={() => handleSort("name")}
+                  className="flex items-center hover:text-foreground"
+                >
+                  Nome
+                  <SortIcon field="name" />
+                </button>
+              </TableHead>
               <TableHead>E-mail</TableHead>
               <TableHead>Telefone</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>
+                <button
+                  onClick={() => handleSort("status")}
+                  className="flex items-center hover:text-foreground"
+                >
+                  Status
+                  <SortIcon field="status" />
+                </button>
+              </TableHead>
               <TableHead className="text-right">Ações</TableHead>
             </TableRow>
           </TableHeader>

@@ -17,15 +17,19 @@ function sanitizeSearchInput(input: string): string {
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ search?: string; page?: string; pageSize?: string }>
+  searchParams: Promise<{ search?: string; page?: string; pageSize?: string; sort?: string; order?: string }>
 }) {
   await requireAuth()
 
-  const { search: rawSearch, page = "1", pageSize = "10" } = await searchParams
+  const { search: rawSearch, page = "1", pageSize = "10", sort: rawSort = "created_at", order: rawOrder = "desc" } = await searchParams
   const search = rawSearch ? sanitizeSearchInput(rawSearch) : undefined
   const currentPage = Math.max(1, Math.floor(Number(page)) || 1)
   const itemsPerPage = Math.min(100, Math.max(1, Math.floor(Number(pageSize)) || 10))
   const offset = (currentPage - 1) * itemsPerPage
+
+  const allowedSortFields = ["name", "email", "status", "created_at"]
+  const sortField = allowedSortFields.includes(rawSort) ? rawSort : "created_at"
+  const sortOrder = rawOrder === "asc" ? "asc" : "desc"
 
   const supabase = await createServiceClient()
 
@@ -40,7 +44,7 @@ export default async function Home({
   let query = supabase
     .from("customers")
     .select("*")
-    .order("created_at", { ascending: false })
+    .order(sortField, { ascending: sortOrder === "asc" })
     .range(offset, offset + itemsPerPage - 1)
 
   if (search) {
