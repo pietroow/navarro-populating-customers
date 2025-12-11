@@ -13,7 +13,7 @@ pnpm lint         # Run ESLint
 
 ## Architecture Overview
 
-This is a Next.js 16 customer management application with Supabase backend. The UI is in Portuguese (Brazilian).
+This is a Next.js 16.0 customer management application with Supabase backend. The UI is in Portuguese (Brazilian).
 
 ### Tech Stack
 - **Framework**: Next.js 16 with App Router
