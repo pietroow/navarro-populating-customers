@@ -31,7 +31,7 @@ export function CustomerDialog({ customer, mode }: CustomerDialogProps) {
   const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
   const { toast } = useToast()
-  const [phone, setPhone] = useState(customer?.phone || "")
+  const [phone, setPhone] = useState(customer?.phone ? formatPhoneNumber(customer.phone) : "")
   const [status, setStatus] = useState<"ativo" | "inativo">(customer?.status || "ativo")
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -95,7 +95,7 @@ export function CustomerDialog({ customer, mode }: CustomerDialogProps) {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">E-mail</Label>
-              <Input id="email" name="email" type="email" defaultValue={customer?.email} required />
+              <Input id="email" name="email" type="email" defaultValue={customer?.email || ""} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="phone">Telefone</Label>

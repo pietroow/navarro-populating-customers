@@ -7,7 +7,7 @@ import { z } from "zod"
 
 const customerSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório").max(255, "Nome muito longo"),
-  email: z.string().email("E-mail inválido"),
+  email: z.string().email("E-mail inválido").optional().nullable().or(z.literal("")),
   phone: z.string().max(20).optional().nullable(),
   status: z.enum(["ativo", "inativo"]).default("ativo"),
 })
@@ -33,7 +33,7 @@ export async function createCustomer(formData: FormData) {
 
   const { error } = await supabase.from("customers").insert({
     name,
-    email,
+    email: email || null,
     phone: phone || null,
     status,
   })
@@ -76,7 +76,7 @@ export async function updateCustomer(id: string, formData: FormData) {
     .from("customers")
     .update({
       name,
-      email,
+      email: email || null,
       phone: phone || null,
       status,
     })

@@ -11,6 +11,7 @@ import { useTransition } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { PaginationControls } from "./pagination-controls"
 import { useRouter, useSearchParams } from "next/navigation"
+import { formatPhoneNumber } from "@/lib/utils/phone-mask"
 
 interface CustomerTableProps {
   customers: Customer[]
@@ -85,8 +86,8 @@ export function CustomerTable({ customers, totalCount }: CustomerTableProps) {
               customers.map((customer) => (
                 <TableRow key={customer.id}>
                   <TableCell className="font-medium">{customer.name}</TableCell>
-                  <TableCell>{customer.email}</TableCell>
-                  <TableCell>{customer.phone || "—"}</TableCell>
+                  <TableCell>{customer.email || "—"}</TableCell>
+                  <TableCell>{customer.phone ? formatPhoneNumber(customer.phone) : "—"}</TableCell>
                   <TableCell>
                     <Badge variant={customer.status === "ativo" ? "default" : "secondary"}>
                       {customer.status === "ativo" ? "Ativo" : "Inativo"}

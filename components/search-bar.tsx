@@ -18,7 +18,10 @@ export function SearchBar() {
     } else {
       params.delete("search")
     }
-    router.push(`?${params.toString()}`)
+
+    if (params.toString() !== searchParams.toString()) {
+      router.push(`?${params.toString()}`)
+    }
   }, [deferredSearch, router, searchParams])
 
   return (
